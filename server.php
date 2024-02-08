@@ -16,6 +16,7 @@ class Chat implements MessageComponentInterface {
 
     public function onOpen(ConnectionInterface $conn) {
         $this->clients->attach($conn);
+        echo "New connection! ({$conn->resourceId})\n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
@@ -28,9 +29,11 @@ class Chat implements MessageComponentInterface {
 
     public function onClose(ConnectionInterface $conn) {
         $this->clients->detach($conn);
+        echo "Connection {$conn->resourceId} has disconnected\n";
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
+        echo "An error has occurred: {$e->getMessage()}\n";
         $conn->close();
     }
 }
@@ -43,5 +46,7 @@ $server = IoServer::factory(
     ),
     8080
 );
+
+echo "Server is running at ws://localhost:8080\n";
 
 $server->run();
